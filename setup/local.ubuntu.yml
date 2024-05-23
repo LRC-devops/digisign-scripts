@@ -1,0 +1,43 @@
+- name: Configure Kiosk Environment
+  hosts: localhost
+  become: true
+  tasks: 
+    - name: Update apt repos
+      apt: 
+        update_cache: yes
+
+    - name: install pkgs
+      apt:
+        name: 
+          - firefox
+          - openbox
+          - lightdm
+          - lightdm-gtk-greeter
+          - xserver-xorg
+
+    - name: Create Kiosk user
+      user: 
+        name: kiosk
+        shell: /bin/bash
+        create_home: yes
+
+    - name: Allow passwordless login for kiosk user
+      user: 
+        name: kiosk
+        groups: nopasswdlogin
+        append: yes
+
+    - name: Create .xinitrc for kiosk user
+      copy: 
+        dest: /home/kiosk/.xinitrc
+        content: |
+            #!/bin/bash
+            openbox &
+            firefox --kiosk http://192.168.0.42:5173
+        owner: kiosk
+        group: kiosk
+        mode: '0755'
+
+    - name: Reboot the system
+      reboot:
+
