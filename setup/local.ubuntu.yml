@@ -38,6 +38,15 @@
         group: kiosk
         mode: '0755'
 
+    - name: Configure LightDM for auto login
+      blockinfile: 
+        path: /etc/lightdm/lightdm.conf
+        block: |
+          [Seat:*]
+          greeter-session=lightdm-gtk-greeter
+          autologin-user=kiosk
+          autologin-session=openbox
+
     - name: Reboot the system
       reboot:
 
