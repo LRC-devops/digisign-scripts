@@ -1,0 +1,43 @@
+- name: Configure Kiosk Environment
+  hosts: localhost
+  become: true
+  tasks: 
+    - name: Update apk repos
+      apk:
+        name: "{{ item }}"
+        state: present
+      with_items: 
+        - sudo
+        - bash
+        - openbox
+        - ansible
+        - xauth
+        - xorg-server
+        - xf86-video-vesa
+        - xf86-input-libinput
+        - firefox
+
+    - name: Create Kiosk user
+      user: 
+        name: kiosk
+        shell: /bin/bash
+        create_home: yes
+        password: "*"
+
+    - name: Create .xinitrc for kiosk user
+      copy: 
+        dest: /home/kiosk/.xinitrc
+        content: |
+            #!/bin/bash
+            export DISPLAY=:0
+            export XAUTHORITY=/home/kiosk/.Xauthority
+            openbox &
+            firefox --kiosk http://192.168.0.42:5173
+        owner: kiosk
+        group: kiosk
+        mode: '0755'
+
+    - name: Allow kiosk to run sudo without password
+      lineinfile: 
+        dest: /etc/sudoers
+        line: "kiosk ALL=(ALL) NOPASSWD: ALL"

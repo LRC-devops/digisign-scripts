@@ -1,0 +1,4 @@
+- name: Reboot
+  shell: sudo reboot now
+  tags:
+  - reboot

@@ -1,0 +1,17 @@
+FROM alpine:latest
+
+ENV DISPLAY=:0
+ENV XAUTHORITY=/home/kiosk/.XAUTHORITY
+
+RUN apk update && apk add --no-cache \
+  sudo \
+  bash \
+  ansible
+
+RUN mkdir ansible
+COPY ./local.yml /ansible
+CMD ["/bin/bash"]
+
+
+
+

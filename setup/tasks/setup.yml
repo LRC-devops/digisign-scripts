@@ -1,0 +1,31 @@
+- name: Add Kiosk User
+  shell: sudo adduser -D -s /bin/false kiosk
+  tags:
+  - setup
+- name: Create xinitrc
+  shell: sudo mkdir -p /home/kiosk/.config/openbox
+  tags:
+  - setup
+- name: Append to xinitrc
+  shell: sudo echo "export DISPLAY=:0 \
+  export XAUTHORITY=/home/kiosk/.Xauthority \
+  \
+  openbox & \
+  firefox --kiosk http://192.168.0.42:5173" >> /home/kiosk/.xinitrc
+  tags:
+  - setup
+- name: Make xinitrc executable
+  shell: sudo chmod +x /home/kiosk/.xinitrc
+  tags:
+  - setup
+- name: Automatic login
+  # shell: sed -i 's/tty1::respawn:/bin/login -f/tty1::respawn:/bin/login -f kiosk tty1 </dev/tty1 >/dev/tty1 2>&1'
+  shell: sudo echo "tty1::respawn:/bin/login -f kiosk tty1 </dev/tty1 >/dev/tty1 2>&1" >> /etc/inittab
+  tags:
+  - setup
+- name: Start X automatically for Kiosk
+  shell: sudo echo "if [ "$(id -u)" -eq 1000 ]; then \
+  startx \
+  fi" >> /etc/profile
+  tags:
+  - setup

@@ -1,0 +1,30 @@
+- name: Install XOrg
+  community.general.apk:
+    name: xorg-server
+    update_cache: true
+  tags:
+  - tools
+- name: Install xf86-video
+  community.general.apk:
+    name: xf86-video-vesa 
+    update_cache: true
+  tags:
+  - tools
+- name: Install xf86-input
+  community.general.apk:
+    name: xf86-input-libinput
+    update_cache: true
+  tags:
+  - tools
+- name: Install Firefox
+  community.general.apk:
+    name: firefox
+    update_cache: true
+  tags:
+  - tools
+- name: Install OpenBox WM
+  community.general.apk:
+    name: openbox
+    update_cache: true
+  tags:
+  - tools
